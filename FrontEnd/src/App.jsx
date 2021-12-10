@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import './App.css';
 import abi from './utils/BCtwatter.json';
 
-// smart contract 0xB482994f7a1955F5D7c4913d1b40921393ffe70F
+// smart contract https://rinkeby.etherscan.io/address/0x17052f1EA97D67Bd8e45B128deea2757572316EDF
 
 const App = () => {
   /*
@@ -11,7 +11,7 @@ const App = () => {
   */
   const [currentAccount, setCurrentAccount] = useState("");
   const [allTwats, setAllTwats] = useState([])
-  const contractAddress = "0xB482994f7a1955F5D7c4913d1b40921393ffe70F";
+  const contractAddress = "0x17052f1EA97D67Bd8e45B128deea2757572316ED";
   const contractABI = abi.abi;
 
   const checkIfWalletIsConnected = async () => {
@@ -181,7 +181,7 @@ const App = () => {
           </header>
 
           <div className="bio">
-            Join in on the fun by twatting @ me bro!
+            Join in on the fun by twatting @ me bro! Every twat gives you a chance at bagging some free Eth! Also, show you support by giving your favourite twat a cheers. Every time you cheers a twat you receive a sweet reward ;)
           </div>
           <br></br>
       
