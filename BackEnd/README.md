@@ -2,8 +2,8 @@
 
 // Deployer wallet private key:
 
-USER_PKEY=''
+USER_PKEY="..."
 
-Deployer alchemy link:
+// Deployer alchemy link:
 
-USER_ALC_LINK=''
+USER_ALC_LINK="..."
