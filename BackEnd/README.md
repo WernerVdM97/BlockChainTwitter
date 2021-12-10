@@ -1,6 +1,6 @@
-Be sure to add a process.env file with the following parameters:
+# Be sure to add a .env file with the following parameters:
 
-Deployer wallet private key:
+// Deployer wallet private key:
 
 USER_PKEY=''
 
