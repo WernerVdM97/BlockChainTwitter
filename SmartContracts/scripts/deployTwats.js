@@ -1,14 +1,19 @@
-// deployed to 0xB482994f7a1955F5D7c4913d1b40921393ffe70F on rinkeyby
+// deployed to 0x17052f1EA97D67Bd8e45B128deea2757572316ED on rinkeyby
 
 const main = async () => {
 
     // init twat contract and deploy
 
     const twatContractFactory = await hre.ethers.getContractFactory('BCtwatter');
-    const twatContract = await twatContractFactory.deploy();
+    const twatContract = await twatContractFactory.deploy(
+        {value: hre.ethers.utils.parseEther('0.001'), }
+    );
     await twatContract.deployed();
 
     console.log('Twat Contract Address;',twatContract.address);
+
+    let contractBalance = await hre.ethers.provider.getBalance(twatContract.address);
+    console.log('Contract Eth:', hre.ethers.utils.formatEther(contractBalance));
 
     let twatCount;
     twatCount = await twatContract.getTotalTwats();
@@ -22,8 +27,14 @@ const main = async () => {
     let twatTxn = await twatContract.connect(_).twat('The first twat is here!');
     await twatTxn.wait();
 
-    twatTxn = await twatContract.connect(_).twat('The second twat live!');
-    await twatTxn.wait()
+    let cheersTxn = await twatContract.connect(_).cheers(0);
+    await cheersTxn.wait()
+
+    contractBalance = await hre.ethers.provider.getBalance(twatContract.address);
+    console.log('Contract Eth:', hre.ethers.utils.formatEther(contractBalance));
+
+    //twatTxn = await twatContract.connect(_).twat('The second twat live!');
+    //await twatTxn.wait()
 
     let allTwats = await twatContract.getAllTwats();
     console.log("all twats:", allTwats);
