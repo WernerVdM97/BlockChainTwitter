@@ -206,7 +206,7 @@ const App = () => {
               <div>Time: {twat.timestamp.toString()}</div>
               <div>Message: {twat.message}</div>
               <div>Cheers': {twat.n_cheers}</div>
-              <div><button onClick={cheers.bind(this,twat.indentifier)}>cheers!</button></div>
+              <div><button onClick={cheers.bind(this,twat.identifier)}>cheers!</button></div>
             </div>)
         })}
 
