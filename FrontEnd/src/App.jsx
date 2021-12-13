@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import './App.css';
 import abi from './utils/BCtwatter.json';
 
-// smart contract https://rinkeby.etherscan.io/address/0x17052f1EA97D67Bd8e45B128deea2757572316EDF
+// smart contract https://rinkeby.etherscan.io/address/0x4C209Dd5303E58Ad3cb11607097EeD46d17eE202
 
 const App = () => {
   /*
@@ -11,7 +11,7 @@ const App = () => {
   */
   const [currentAccount, setCurrentAccount] = useState("");
   const [allTwats, setAllTwats] = useState([])
-  const contractAddress = "0x17052f1EA97D67Bd8e45B128deea2757572316ED";
+  const contractAddress = "0x4C209Dd5303E58Ad3cb11607097EeD46d17eE202";
   const contractABI = abi.abi;
 
   const checkIfWalletIsConnected = async () => {
@@ -84,7 +84,7 @@ const App = () => {
         twats.forEach(twat => {
           //push applicable content into new cleaned array as a struct
           twatsCleaned.push({
-            indentifier: twat.twatID.toNumber(),
+            identifier: twat.twatID.toNumber(),
             address: twat.twatee,
             timestamp: new Date(twat.timestamp * 1000),
             message: twat.message,
@@ -106,6 +106,7 @@ const App = () => {
   }
 
   const twatMe = async () => {
+    
     try{
       const { ethereum } = window;
       // check meta mask logged in
@@ -120,11 +121,18 @@ const App = () => {
 
         let msg = document.getElementById("twat_msg").value;
 
-        const twatTxn = await twatterContract.twat(msg);
-        console.log("Mining...", twatTxn.hash);
+        if(msg !== "")
+        {
+          const twatTxn = await twatterContract.twat(msg, {gasLimit: 300000});
+          console.log("Mining...", twatTxn.hash);
 
-        await twatTxn.wait()
-        console.log("Mined:", twatTxn.hash);
+          await twatTxn.wait()
+          console.log("Mined:", twatTxn.hash);
+        }else{
+          alert("Please enter a message!");
+        }
+
+
 
         count = await twatterContract.getTotalTwats();
         console.log("Retreived total poke count...", count.toNumber())
@@ -151,7 +159,7 @@ const App = () => {
         const twatterContract = new ethers.Contract(contractAddress, contractABI, signer);    
 
         console.log("Adding a cheers for twat", twat_num);
-        const cheersTxn = await twatterContract.cheers(twat_num);
+        const cheersTxn = await twatterContract.cheers(twat_num, {gasLimit:300000});
         console.log("Mining...", cheersTxn.hash);
         await cheersTxn.wait();
         console.log("Mined:",cheersTxn.hash);
@@ -168,50 +176,96 @@ const App = () => {
 
   useEffect(() => {
     checkIfWalletIsConnected();
+
+    //event listener for new twats to refresh UI
+    let twatterContract;
+
+    // code for updating existing array with only new Twat. Doesnt work though.
+    const onNewTwat = (index, from, timestamp, message, n_cheers) => {
+      console.log('New twat detected', index, from, timestamp, message, n_cheers);
+      setAllTwats(prevState => [
+        ...prevState,
+        {
+          identifier: index,
+          address: from,
+          timestamp: new Date(timestamp * 1000),
+          message: message,
+          n_cheers: n_cheers,
+        },
+      ]);
+    };
+
+    //Instead fetch all twats incase a new twat is made
+    if (window.ethereum){
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      twatterContract = new ethers.Contract(contractAddress, contractABI, signer);
+      twatterContract.on('TwatReceived', getAllTwats);
+    }
+
+    return () => {
+      if(twatterContract){
+        twatterContract.off('TwatReceived', getAllTwats);
+      }
+    };
+
   }, [])
   
   return (
-   
-    <div className="mainContainer">
-      <div className="dataContainer">
 
-          <header className="w3-container w3-center w3-padding-32"> 
+    <div className="w3-row-padding w3-content">
+
+      <div className="w3-light-grey w3-padding-64 w3-margin-bottom w3-center">
+        <header> 
           <h1><b>Twat City!</b></h1>
-          <p>Welcome to the twatter page of <span className="w3-tag">Spanner</span></p>
-          </header>
+          <p>Welcome to the twatter page of Werner</p>
+        </header>
+      </div>
 
-          <div className="bio">
-            Join in on the fun by twatting @ me bro! Every twat gives you a chance at bagging some free Eth! Also, show you support by giving your favourite twat a cheers. Every time you cheers a twat you receive a sweet reward ;)
-          </div>
-          <br></br>
-      
-          <br></br>
-          <label for="Message">Message:</label>
-          <input type = "text" name="twat_msg" id="twat_msg"></input>
-          <br></br>
-          <button className="twatButton" onClick={twatMe}>Twat at me bro</button>
-          <br></br>
 
-          {!currentAccount && (
-            <button className="twatButton" onClick={connectWallet}>
-            Connect your Wallet
-            </button>
-          )}
+      <div className="w3-twothird">
+        <div className="w3-container w3-light-grey">
+        <br></br>
+        <div className="w3-justify">
+          Join in on the fun by twatting @ me! Every twat gives you a chance at bagging some free Eth! Also, show you support by giving your favourite twat a cheers. Every time you cheers a twat you receive a sweet reward.
+          Fair warning though, there is a spam filter so please refrain from twatting more often than every minute...
+        </div>
 
+        {!currentAccount && (
+          <button className="connectWalletButton" onClick={connectWallet}>
+          Connect your Wallet
+          </button>
+        )}
+        </div>
+
+        <div className="w3-container w3-light-grey">
           {allTwats.map((twat, index) => {
           return (
-            <div key={index} style={{ backgroundColor: "OldLace", marginTop: "16px", padding: "8px" }}>
-              <div>Twat number: {twat.indentifier}</div>
+            <div key={index} className="twatCard">
+              <div>Twat number: {twat.identifier}</div>
               <div>Address: {twat.address}</div>
               <div>Time: {twat.timestamp.toString()}</div>
               <div>Message: {twat.message}</div>
               <div>Cheers': {twat.n_cheers}</div>
-              <div><button onClick={cheers.bind(this,twat.identifier)}>cheers!</button></div>
+              <div><button className="cheersButton" onClick={cheers.bind(this,twat.identifier)}><i className="Cheers">cheers!</i></button></div>
             </div>)
-        })}
-
+          })}
+        </div>
       </div>
-          
+
+      {currentAccount && (
+      <div className="w3-third">
+        <div className="w3-container w3-light-grey">
+          <h3>Message:</h3>
+          <textarea name="twat_msg" id="twat_msg" maxLength="116"></textarea>
+          <button className="twatButton" onClick={twatMe}>Twat at me bro</button>
+        </div>
+      </div>
+      )}
+
+      
+
     </div>
     );
   }
