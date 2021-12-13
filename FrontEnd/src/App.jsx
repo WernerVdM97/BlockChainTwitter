@@ -218,8 +218,12 @@ const App = () => {
 
       <div className="w3-light-grey w3-padding-64 w3-margin-bottom w3-center">
         <header> 
-          <h1><b>Twat City!</b></h1>
-          <p>Welcome to the twatter page of Werner</p>
+          <h1><b>Welcom to Twatter!</b></h1>
+          <p>
+            This is the twatter page of Werner,
+            <br></br>
+            be sure to connect to the Rinkeby network in order to load twats!
+          </p>
         </header>
       </div>
 
@@ -231,6 +235,7 @@ const App = () => {
           Join in on the fun by twatting @ me! Every twat gives you a chance at bagging some free Eth! Also, show you support by giving your favourite twat a cheers. Every time you cheers a twat you receive a sweet reward.
           Fair warning though, there is a spam filter so please refrain from twatting more often than every minute...
         </div>
+        <br></br>
 
         {!currentAccount && (
           <button className="connectWalletButton" onClick={connectWallet}>
@@ -238,15 +243,15 @@ const App = () => {
           </button>
         )}
         </div>
-
-        <div className="w3-container w3-light-grey">
+        <br></br>
+        <div className="w3-container w3-light-grey">        
           {allTwats.map((twat, index) => {
           return (
             <div key={index} className="twatCard">
               <div>Twat number: {twat.identifier}</div>
               <div>Address: {twat.address}</div>
               <div>Time: {twat.timestamp.toString()}</div>
-              <div>Message: {twat.message}</div>
+              <div>New Twat: {twat.message}</div>
               <div>Cheers': {twat.n_cheers}</div>
               <div><button className="cheersButton" onClick={cheers.bind(this,twat.identifier)}><i className="Cheers">cheers!</i></button></div>
             </div>)
@@ -259,7 +264,7 @@ const App = () => {
         <div className="w3-container w3-light-grey">
           <h3>Message:</h3>
           <textarea name="twat_msg" id="twat_msg" maxLength="116"></textarea>
-          <button className="twatButton" onClick={twatMe}>Twat at me bro</button>
+          <button className="twatButton" onClick={twatMe}>Twat at me</button>
         </div>
       </div>
       )}
