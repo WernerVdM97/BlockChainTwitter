@@ -55,6 +55,10 @@
   background: rgba(9, 99, 233, 0.7);;
 }
 
+.connectWalletButton:hover {
+  background: rgba(0, 0, 0, 0.795);
+}
+
 .connectWalletButton {
   width: auto;
   float: right;

@@ -222,7 +222,7 @@ const App = () => {
           <p>
             This is the twatter page of Werner,
             <br></br>
-            be sure to connect to the Rinkeby network in order to load twats!
+            <b>be sure to connect to the Rinkeby network in order to load twats!</b>
           </p>
         </header>
       </div>
@@ -242,6 +242,12 @@ const App = () => {
           Connect your Wallet
           </button>
         )}
+        {currentAccount && (
+          <button className="connectWalletButton" onClick={getAllTwats}>
+          Pull Twats from Rinkeby
+          </button>
+        )}
+
         </div>
         <br></br>
         <div className="w3-container w3-light-grey">        
