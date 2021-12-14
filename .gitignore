@@ -1,2 +1,3 @@
 # ignore the .env file containing user private key
 *.env
+screenshots/
